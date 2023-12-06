@@ -1,3 +1,9 @@
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+Access-Control-Allow-Headers: Content-Type
+
+
+
 $(window).on("load", function () {
   console.log("Window loaded.");
 
