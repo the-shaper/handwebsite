@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let selectedRadio = document.querySelector(`input[name="${groupName}"]:checked`);
     if (selectedRadio) {
       // Show the corresponding summary block
-      let summaryBlockId = `summary-${selectedRadio.value}-${groupName}`;
+      let summaryBlockId = `summary-${groupName}-${selectedRadio.value}`;
       document.getElementById(summaryBlockId).style.display = 'block';
     }
   }
