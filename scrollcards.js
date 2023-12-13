@@ -49,41 +49,36 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // FUNCTION FOR UPDATING ELEMENTS BASED ON unltdA RADIO SELECTION
-  function updateElementsForUnltdA() {
-    let radioA = document.querySelector('input[name="unltdA"]:checked');
-    if (radioA) {
-      let value = radioA.value;
-      // Reset the elements to default
-      document
-        .querySelectorAll(
-          ".compare-column-symbol_a1, .compare-column-symbol_a2, .compare-column-info.a1, .compare-column-info.a2",
-        )
-        .forEach((el) => {
-          el.classList.remove("selected");
-          el.classList.add("default");
-        });
-      // Apply 'selected' class based on the radio button's value
-      if (value === "lvl1") {
-        document
-          .querySelectorAll(
-            ".compare-column-symbol_a1, .compare-column-info.a1",
-          )
-          .forEach((el) => {
-            el.classList.remove("default");
-            el.classList.add("selected");
-          });
-      } else if (value === "lvl2") {
-        document
-          .querySelectorAll(
-            ".compare-column-symbol_a2, .compare-column-info.a2",
-          )
-          .forEach((el) => {
-            el.classList.remove("default");
-            el.classList.add("selected");
-          });
-      }
+ function updateRadioSummary(groupName) {
+  // Hide all summary blocks for this group
+  document.querySelectorAll(`.Pdetailblockwrapper.${groupName}`).forEach(block => {
+    block.style.display = 'none';
+  });
+
+  // Get the selected radio button for this group
+  let selectedRadio = document.querySelector(`input[name="${groupName}"]:checked`);
+  if (selectedRadio) {
+    // Construct the ID for the corresponding summary block
+    let summaryBlockId = `summary-${groupName}-${selectedRadio.value}`;
+
+    // Show the corresponding summary block
+    let summaryBlock = document.getElementById(summaryBlockId);
+    if (summaryBlock) {
+      summaryBlock.style.display = 'block';
+
+      // Also, update the name and price text inside the summary block
+      summaryBlock.querySelector(".unltd-lvl-summ.name").textContent = selectedRadio.getAttribute("data-name");
+      summaryBlock.querySelector(".unltd-lvl-summ.price").textContent = `$${selectedRadio.getAttribute("data-price")}`;
+      
+      // If you need to toggle icon classes
+      let iconElements = summaryBlock.querySelectorAll(`.unltd-icon-summ.${selectedRadio.value}`);
+      iconElements.forEach(icon => {
+        icon.classList.add('selected'); // Add 'selected' to the correct icon
+      });
     }
   }
+}
+
 
   // FUNCTION FOR UPDATING ELEMENTS BASED ON unltdB RADIO SELECTION
   function updateElementsForUnltdB() {
