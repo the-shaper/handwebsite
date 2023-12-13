@@ -173,12 +173,23 @@ document.addEventListener("DOMContentLoaded", function () {
   updateElementsForUnltdA();
   updateElementsForUnltdB();
 
+  // Call updateRadioSummary to set the initial summary state for each radio group
+  updateRadioSummary("unltdA", "unltdAselection");
+  updateRadioSummary("unltdB", "unltdBselection");
+
+  // Add change event listeners for both radio button groups
   // Add change event listeners for both radio button groups
   document.querySelectorAll('input[name="unltdA"]').forEach((radio) => {
-    radio.addEventListener("change", updateElementsForUnltdA);
+    radio.addEventListener("change", () => {
+      updateElementsForUnltdA();
+      updateRadioSummary("unltdA", "unltdAselection");
+    });
   });
   document.querySelectorAll('input[name="unltdB"]').forEach((radio) => {
-    radio.addEventListener("change", updateElementsForUnltdB);
+    radio.addEventListener("change", () => {
+      updateElementsForUnltdB();
+      updateRadioSummary("unltdB", "unltdBselection");
+    });
   });
 
   // POWER UP CHECKBOXES
