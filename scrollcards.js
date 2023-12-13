@@ -123,31 +123,28 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Function to update the summary for radio button selections
-  function updateRadioSummary(radioGroupName, summaryBlockId) {
-    let selectedRadio = document.querySelector(
-      `input[name="${radioGroupName}"]:checked`,
-    );
-    let summaryBlock = document.getElementById(summaryBlockId);
+  function updateRadioSelection(groupName) {
+    // Hide all summary blocks for this group
+    document.querySelectorAll(`.summary-block-${groupName}`).forEach(block => {
+      block.style.display = 'none';
+    });
 
-    if (selectedRadio && summaryBlock) {
-      // Update the text for name and price
-      summaryBlock.querySelector(".unltd-lvl-summ.name").textContent =
-        selectedRadio.getAttribute("data-name");
-      summaryBlock.querySelector(".unltd-lvl-summ.price").textContent =
-        `$${selectedRadio.getAttribute("data-price")}`;
-
-      // Update icon based on the selection
-      let selectedValue = selectedRadio.value; // 'a1', 'a2', etc.
-      let iconElements = summaryBlock.querySelectorAll(
-        `[class*="unltd-icon-summ."]`,
-      );
-      iconElements.forEach((icon) => icon.classList.add("hidden")); // Hide all icons
-      summaryBlock
-        .querySelector(`.unltd-icon-summ.${selectedValue}`)
-        .classList.remove("hidden"); // Show relevant icon
+    // Get the selected radio button for this group
+    let selectedRadio = document.querySelector(`input[name="${groupName}"]:checked`);
+    if (selectedRadio) {
+      // Show the corresponding summary block
+      let summaryBlockId = `summary-${selectedRadio.value}-${groupName}`;
+      document.getElementById(summaryBlockId).style.display = 'block';
     }
   }
 
+  ['unltdA', 'unltdB'].forEach(groupName => {
+    updateRadioSelection(groupName); // Set initial state
+    document.querySelectorAll(`input[name="${groupName}"]`).forEach(radio => {
+      radio.addEventListener('change', () => updateRadioSelection(groupName));
+    });
+  });
+  
   // Function to update the summary for checkbox selections
   function updateCheckboxSummary(checkboxId, detailBlockId) {
     let checkbox = document.getElementById(checkboxId);
