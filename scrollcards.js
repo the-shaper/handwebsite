@@ -117,29 +117,31 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  
   // Function to update the summary for radio button selections
-  function updateRadioSummary(groupName, summaryBlockId) {
+    function updateRadioSummary(groupName) {
+    // Hide all summary blocks for this group
+    document.querySelectorAll(`.Pdetailblockwrapper.${groupName}`).forEach(block => {
+      block.classList.add('hidden'); // Assuming 'hidden' is a class that hides elements
+    });
+
+    // Get the selected radio button for this group
     let selectedRadio = document.querySelector(`input[name="${groupName}"]:checked`);
-    let summaryBlock = document.getElementById(summaryBlockId);
+    if (selectedRadio) {
+      // Show the corresponding summary block
+      let selectedValue = selectedRadio.value; // 'a1', 'a2', 'b1', 'b2'
+      let summaryBlock = document.querySelector(`.Pdetailblockwrapper.${selectedValue}`);
+      if (summaryBlock) {
+        summaryBlock.classList.remove('hidden');
 
-    if (selectedRadio && summaryBlock) {
-      summaryBlock.querySelector(".unltd-lvl-summ.name").textContent =
-        selectedRadio.getAttribute("data-name");
-      summaryBlock.querySelector(".unltd-lvl-summ.price").textContent =
-        `$${selectedRadio.getAttribute("data-price")}`;
-
-      // Update icon based on the selection
-      let selectedValue = selectedRadio.value; // 'a1', 'a2', etc.
-      let iconElements = summaryBlock.querySelectorAll(`[class*="unltd-icon-summ."]`);
-      iconElements.forEach((icon) => {
-        icon.classList.add("hidden"); // Hide all icons
-      });
-      let selectedIcon = summaryBlock.querySelector(`.unltd-icon-summ.${selectedValue}`);
-      if (selectedIcon) {
-        selectedIcon.classList.remove("hidden"); // Show relevant icon
+        // Also, update the name and price text inside the summary block
+        summaryBlock.querySelector(".unltd-lvl-summ.name").textContent = selectedRadio.getAttribute("data-name");
+        summaryBlock.querySelector(".unltd-lvl-summ.price").textContent = `$${selectedRadio.getAttribute("data-price")}`;
       }
     }
   }
+
+
 
   
   // Function to update the summary for checkbox selections
@@ -167,23 +169,16 @@ document.addEventListener("DOMContentLoaded", function () {
   updateElementsForUnltdA();
   updateElementsForUnltdB();
 
-  // Call updateRadioSummary to set the initial summary state for each radio group
-  updateRadioSummary("unltdA", "unltdAselection");
-  updateRadioSummary("unltdB", "unltdBselection");
+   // Call updateRadioSummary to set the initial summary state for each radio group
+  updateRadioSummary("unltdA");
+  updateRadioSummary("unltdB");
 
   // Add change event listeners for both radio button groups
-  // Add change event listeners for both radio button groups
   document.querySelectorAll('input[name="unltdA"]').forEach((radio) => {
-    radio.addEventListener("change", () => {
-      updateElementsForUnltdA();
-      updateRadioSummary("unltdA", "unltdAselection");
-    });
+    radio.addEventListener("change", () => updateRadioSummary("unltdA"));
   });
   document.querySelectorAll('input[name="unltdB"]').forEach((radio) => {
-    radio.addEventListener("change", () => {
-      updateElementsForUnltdB();
-      updateRadioSummary("unltdB", "unltdBselection");
-    });
+    radio.addEventListener("change", () => updateRadioSummary("unltdB"));
   });
 
   // POWER UP CHECKBOXES
