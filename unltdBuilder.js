@@ -1,3 +1,5 @@
+//THIS VERSION WORKS UP TO WHERE THE POWER-UP CHECKBOXES ACTIVATE THEIR RESPECTIVE ICONS ON THE LEFT COLUMN THEN THEY ARE CHECKED
+
 document.addEventListener("DOMContentLoaded", function () {
   function toggleButtonStates(classPrefix) {
     // Reset all buttons, text, and icon elements to default state
@@ -120,49 +122,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Function to update the summary for radio button selections
-  function updateRadioSummary(radioGroupName, summaryBlockId) {
-    let selectedRadio = document.querySelector(
-      `input[name="${radioGroupName}"]:checked`,
-    );
-    let summaryBlock = document.getElementById(summaryBlockId);
-
-    if (selectedRadio && summaryBlock) {
-      // Update the text for name and price
-      summaryBlock.querySelector(".unltd-lvl-summ.name").textContent =
-        selectedRadio.getAttribute("data-name");
-      summaryBlock.querySelector(".unltd-lvl-summ.price").textContent =
-        `$${selectedRadio.getAttribute("data-price")}`;
-
-      // Update icon based on the selection
-      let selectedValue = selectedRadio.value; // 'a1', 'a2', etc.
-      let iconElements = summaryBlock.querySelectorAll(
-        `[class*="unltd-icon-summ."]`,
-      );
-      iconElements.forEach((icon) => icon.classList.add("hidden")); // Hide all icons
-      summaryBlock
-        .querySelector(`.unltd-icon-summ.${selectedValue}`)
-        .classList.remove("hidden"); // Show relevant icon
-    }
-  }
-
-  // Function to update the summary for checkbox selections
-  function updateCheckboxSummary(checkboxId, detailBlockId) {
-    let checkbox = document.getElementById(checkboxId);
-    let detailBlock = document.getElementById(detailBlockId);
-
-    if (checkbox && detailBlock) {
-      // Show or hide the detail block based on checkbox state
-      detailBlock.style.display = checkbox.checked ? "block" : "none";
-
-      // Update the text for name and price
-      detailBlock.querySelector(".unltd-lvl-summ.name").textContent =
-        checkbox.getAttribute("data-name");
-      detailBlock.querySelector(".unltd-lvl-summ.price").textContent =
-        `$${checkbox.getAttribute("data-price")}`;
-    }
-  }
-
   // Initialize radio buttons for both groups
   initializeRadioButtons("radio-field-parent-unltd_a");
   initializeRadioButtons("radio-field-parent-unltd_b");
@@ -171,37 +130,15 @@ document.addEventListener("DOMContentLoaded", function () {
   updateElementsForUnltdA();
   updateElementsForUnltdB();
 
-  // Call updateRadioSummary to set the initial summary state for each radio group
-  updateRadioSummary("unltdA", "unltdAselection");
-  updateRadioSummary("unltdB", "unltdBselection");
-
-  // Add change event listeners for both radio button groups
   // Add change event listeners for both radio button groups
   document.querySelectorAll('input[name="unltdA"]').forEach((radio) => {
-    radio.addEventListener("change", () => {
-      updateElementsForUnltdA();
-      updateRadioSummary("unltdA", "unltdAselection");
-    });
+    radio.addEventListener("change", updateElementsForUnltdA);
   });
   document.querySelectorAll('input[name="unltdB"]').forEach((radio) => {
-    radio.addEventListener("change", () => {
-      updateElementsForUnltdB();
-      updateRadioSummary("unltdB", "unltdBselection");
-    });
+    radio.addEventListener("change", updateElementsForUnltdB);
   });
 
   // POWER UP CHECKBOXES
-  // Initialize checkboxes and update summaries
-  for (let i = 1; i <= 5; i++) {
-    let checkboxId = `powerUp${i}`;
-    let detailBlockId = `p${i}detailBlock`;
-    updateCheckboxSummary(checkboxId, detailBlockId);
-    document
-      .getElementById(checkboxId)
-      .addEventListener("change", () =>
-        updateCheckboxSummary(checkboxId, detailBlockId),
-      );
-  }
 
   // Function to toggle the 'selected' class for power-up checkboxes
   function toggleSelectedClass(
@@ -227,7 +164,6 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
   }
-
   // Initialize for each power-up
   toggleSelectedClass(
     "powerUp1",
