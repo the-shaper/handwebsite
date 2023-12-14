@@ -1,5 +1,3 @@
-//THIS VERSION WORKS UP TO WHERE THE POWER-UP CHECKBOXES ACTIVATE THEIR RESPECTIVE ICONS ON THE LEFT COLUMN THEN THEY ARE CHECKED
-
 document.addEventListener("DOMContentLoaded", function () {
   function toggleButtonStates(classPrefix) {
     // Reset all buttons, text, and icon elements to default state
@@ -49,41 +47,36 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // FUNCTION FOR UPDATING ELEMENTS BASED ON unltdA RADIO SELECTION
-  function updateElementsForUnltdA() {
-    let radioA = document.querySelector('input[name="unltdA"]:checked');
-    if (radioA) {
-      let value = radioA.value;
-      // Reset the elements to default
-      document
-        .querySelectorAll(
-          ".compare-column-symbol_a1, .compare-column-symbol_a2, .compare-column-info.a1, .compare-column-info.a2",
-        )
-        .forEach((el) => {
-          el.classList.remove("selected");
-          el.classList.add("default");
-        });
-      // Apply 'selected' class based on the radio button's value
-      if (value === "lvl1") {
-        document
-          .querySelectorAll(
-            ".compare-column-symbol_a1, .compare-column-info.a1",
-          )
-          .forEach((el) => {
-            el.classList.remove("default");
-            el.classList.add("selected");
-          });
-      } else if (value === "lvl2") {
-        document
-          .querySelectorAll(
-            ".compare-column-symbol_a2, .compare-column-info.a2",
-          )
-          .forEach((el) => {
-            el.classList.remove("default");
-            el.classList.add("selected");
-          });
-      }
+ function updateRadioSummary(groupName) {
+  // Hide all summary blocks for this group
+  document.querySelectorAll(`.Pdetailblockwrapper.${groupName}`).forEach(block => {
+    block.style.display = 'none';
+  });
+
+  // Get the selected radio button for this group
+  let selectedRadio = document.querySelector(`input[name="${groupName}"]:checked`);
+  if (selectedRadio) {
+    // Construct the ID for the corresponding summary block
+    let summaryBlockId = `summary-${groupName}-${selectedRadio.value}`;
+
+    // Show the corresponding summary block
+    let summaryBlock = document.getElementById(summaryBlockId);
+    if (summaryBlock) {
+      summaryBlock.style.display = 'block';
+
+      // Also, update the name and price text inside the summary block
+      summaryBlock.querySelector(".unltd-lvl-summ.name").textContent = selectedRadio.getAttribute("data-name");
+      summaryBlock.querySelector(".unltd-lvl-summ.price").textContent = `$${selectedRadio.getAttribute("data-price")}`;
+      
+      // If you need to toggle icon classes
+      let iconElements = summaryBlock.querySelectorAll(`.unltd-icon-summ.${selectedRadio.value}`);
+      iconElements.forEach(icon => {
+        icon.classList.add('selected'); // Add 'selected' to the correct icon
+      });
     }
   }
+}
+
 
   // FUNCTION FOR UPDATING ELEMENTS BASED ON unltdB RADIO SELECTION
   function updateElementsForUnltdB() {
@@ -123,31 +116,28 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Function to update the summary for radio button selections
-  function updateRadioSummary(radioGroupName, summaryBlockId) {
-    let selectedRadio = document.querySelector(
-      `input[name="${radioGroupName}"]:checked`,
-    );
-    let summaryBlock = document.getElementById(summaryBlockId);
+  function updateRadioSelection(groupName) {
+    // Hide all summary blocks for this group
+    document.querySelectorAll(`.summary-block-${groupName}`).forEach(block => {
+      block.style.display = 'none';
+    });
 
-    if (selectedRadio && summaryBlock) {
-      // Update the text for name and price
-      summaryBlock.querySelector(".unltd-lvl-summ.name").textContent =
-        selectedRadio.getAttribute("data-name");
-      summaryBlock.querySelector(".unltd-lvl-summ.price").textContent =
-        `$${selectedRadio.getAttribute("data-price")}`;
-
-      // Update icon based on the selection
-      let selectedValue = selectedRadio.value; // 'a1', 'a2', etc.
-      let iconElements = summaryBlock.querySelectorAll(
-        `[class*="unltd-icon-summ."]`,
-      );
-      iconElements.forEach((icon) => icon.classList.add("hidden")); // Hide all icons
-      summaryBlock
-        .querySelector(`.unltd-icon-summ.${selectedValue}`)
-        .classList.remove("hidden"); // Show relevant icon
+    // Get the selected radio button for this group
+    let selectedRadio = document.querySelector(`input[name="${groupName}"]:checked`);
+    if (selectedRadio) {
+      // Show the corresponding summary block
+      let summaryBlockId = `summary-${groupName}-${selectedRadio.value}`;
+      document.getElementById(summaryBlockId).style.display = 'block';
     }
   }
 
+  ['unltdA', 'unltdB'].forEach(groupName => {
+    updateRadioSelection(groupName); // Set initial state
+    document.querySelectorAll(`input[name="${groupName}"]`).forEach(radio => {
+      radio.addEventListener('change', () => updateRadioSelection(groupName));
+    });
+  });
+  
   // Function to update the summary for checkbox selections
   function updateCheckboxSummary(checkboxId, detailBlockId) {
     let checkbox = document.getElementById(checkboxId);
